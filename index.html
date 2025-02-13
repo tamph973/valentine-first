@@ -34,6 +34,7 @@
 				width: 100%;
 				max-width: 800px;
 				padding: 20px;
+				position: relative;
 			}
 
 			@media (min-width: 768px) {
@@ -78,28 +79,43 @@
 				position: absolute;
 				background-color: #e40e0e;
 				display: inline-block;
-				height: 30px;
-				width: 30px;
+				height: 20px;
+				width: 20px;
 				transform: rotate(-45deg);
-				animation: heartbeat 1s infinite;
+				animation: heartbeat 1s infinite ease-in-out, floatUp 3s linear infinite;
+				opacity: 0.8;
 			}
+
 			.heart:before,
 			.heart:after {
 				content: '';
 				background-color: #e40e0e;
-				border-radius: 70%;
-				height: 30px;
+				border-radius: 50%;
+				height: 20px;
+				width: 20px;
 				position: absolute;
-				width: 30px;
 			}
+
 			.heart:before {
-				top: -15px;
+				top: -10px;
 				left: 0;
 			}
+
 			.heart:after {
-				left: 15px;
+				left: 10px;
 				top: 0;
 			}
+			@keyframes floatUp {
+				0% {
+					transform: translateY(0) rotate(-45deg);
+					opacity: 1;
+				}
+				100% {
+					transform: translateY(-100px) rotate(-45deg);
+					opacity: 0;
+				}
+			}
+
 			@keyframes heartbeat {
 				0% {
 					transform: scale(1) rotate(-45deg);
@@ -122,6 +138,7 @@
 					background-position: 0% 60%;
 				}
 			}
+
 			#showLove {
 				background-color: #e40e0e;
 				color: white;
@@ -189,19 +206,29 @@
 		</div>
 		<script>
 			function createHeart() {
+				const img = document.querySelector('img');
+				const imgRect = img.getBoundingClientRect();
 				const heart = document.createElement('div');
 				heart.classList.add('heart');
-				heart.style.left = Math.random() * 100 + 'vw';
-				heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+
+				// Tạo vị trí ngẫu nhiên xung quanh ảnh
+				const offsetX = Math.random() * imgRect.width - 10; // Giảm bớt để căn chỉnh giữa
+				const offsetY = Math.random() * imgRect.height - 10;
+
+				heart.style.left = `${imgRect.left + offsetX}px`;
+				heart.style.top = `${imgRect.top + offsetY}px`;
+
 				document.body.appendChild(heart);
 
+				// Xóa trái tim sau vài giây để tránh làm đầy DOM
 				setTimeout(() => {
 					heart.remove();
-				}, 5000);
+				}, 3000);
 			}
 
+			// Khi nhấn nút, tạo nhiều trái tim xung quanh ảnh
 			document.getElementById('showLove').addEventListener('click', () => {
-				for (let i = 0; i < 22; i++) {
+				for (let i = 0; i < 20; i++) {
 					setTimeout(createHeart, i * 150);
 				}
 			});
